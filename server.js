@@ -20,7 +20,7 @@ app.use(express.json())
 app.use(cookieParser())
 
 app.use(cors({
-  origin: ["http://localhost:5173",'http://10.183.163.203:5173'],
+  origin: ["http://localhost:5173",'http://10.183.163.203:5173','https://socia-insta-frontend.vercel.app'],
   credentials: true
 }));
 
