@@ -38,8 +38,11 @@ export const Login = async (req, res) => {
                 message: "user not exists",
             })
         }
+       console.log("Entered password:", password);
+console.log("Stored hash:", user.password);
+        
         const hashedPassword = await bcrypt.compare(password, user.password)
-
+console.log("Match:", hashedPassword);
         if (!hashedPassword) {
             return res.json({
                 status: 400,
@@ -48,11 +51,11 @@ export const Login = async (req, res) => {
         }
         const token = jwt.sign({ user: user }, "secret")
 
-        return res.cookie("token", token,res.cookie("token", token, {
-  httpOnly: true,
-  secure: true,
-  sameSite: "None"
-}))
+        return res.cookie("token", token, res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "None"
+        }))
             .json({
                 status: 200,
                 message: "Login successfully",
