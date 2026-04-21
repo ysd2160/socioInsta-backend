@@ -57,11 +57,14 @@ export const Login = async (req, res) => {
         const token = jwt.sign(
             { user: user },
             "secret",
-           
+
         );
 
-        return res
-            .cookie("token", token)
+        return res.cookie("token", token, {
+            httpOnly: true,
+            secure: true, // production mein true hona chahiye
+            sameSite: "None" // VERY IMPORTANT
+        })
             .json({
                 status: 200,
                 message: "Login successfully",
