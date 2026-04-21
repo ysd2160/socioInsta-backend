@@ -27,45 +27,50 @@ export const Register = async (req, res) => {
 }
 
 export const Login = async (req, res) => {
-    try {
-        const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-        const user = await User.findOne({ email })
+    const user = await User.findOne({ email });
 
-        if (!user) {
-            return res.json({
-                status: 400,
-                message: "user not exists",
-            })
-        }
-       console.log("Entered password:", password);
-console.log("Stored hash:", user.password);
-        
-        const hashedPassword = await bcrypt.compare(password, user.password)
-console.log("Match:", hashedPassword);
-        if (!hashedPassword) {
-            return res.json({
-                status: 400,
-                message: "invalid Creditenitial",
-            })
-        }
-        const token = jwt.sign({ user: user }, "secret")
-
-        return res.cookie("token", token, res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "None"
-        }))
-            .json({
-                status: 200,
-                message: "Login successfully",
-                user,
-            })
-    } catch (error) {
-        console.log(error);
-
+    if (!user) {
+      return res.json({
+        status: 400,
+        message: "user not exists",
+      });
     }
-}
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.json({
+        status: 400,
+        message: "invalid Credentials",
+      });
+    }
+
+    const token = jwt.sign(
+      { user: user },
+      "secret",
+      { expiresIn: "1d" }
+    );
+
+    return res
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: false, // local ke liye
+        sameSite: "Lax",
+      })
+      .json({
+        status: 200,
+        message: "Login successfully",
+        user,
+      });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 export const Logout = async (req, res) => {
     try {
         res.clearCookie("token")
