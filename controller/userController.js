@@ -132,7 +132,7 @@ export const getUser = async (req, res) => {
 export const editProfile = async (req, res) => {
     try {
         const userId = req.user?._id;
-        const { username, email, password, bio } = req.body;
+        const { username, email, bio } = req.body;
         const profilePic = req.file;
 
         const user = await User.findById(userId)
@@ -147,7 +147,7 @@ console.log(username,email,password,bio);
         if (username) user.username = username
         if (email) user.email = email
         if (bio) user.bio = bio
-        if (password) user.password = await bcrypt.hash(password, 10)
+        
 
         if (profilePic) {
             console.log(profilePic.path);
